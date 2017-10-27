@@ -1,11 +1,11 @@
 const connection = require('../config/db-connection');
 
-const Ingrediente = {};
+const Persona = {};
 
-Ingrediente.all = next => {
+Persona.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM ingrediente', (error, result) => {
+    connection.query('SELECT * FROM persona', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Ingrediente.all = next => {
     });
 };
 
-Ingrediente.findById = (ingredienteId, next) => {
+Persona.findById = (PersonaId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM ingrediente WHERE idingrediente = ?', 
-        [ingredienteId], (error, result) => {
+    connection.query('SELECT * FROM persona WHERE idPersona = ?',
+    [PersonaId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -25,10 +25,10 @@ Ingrediente.findById = (ingredienteId, next) => {
     });
 };
 
-Ingrediente.count = next => {
+Persona.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(idingrediente) AS count FROM ingrediente`, (error, result) => {
+    connection.query(`SELECT COUNT(idPersona) AS count FROM persona`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Ingrediente.count = next => {
     });
 };
 
-Ingrediente.exist = (ingredienteId, next) => {
+Persona.exist = (PersonaId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM ingrediente WHERE idingrediente = ?) AS exist', [ingredienteId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM persona WHERE idPersona = ?) AS exist', [PersonaId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,21 @@ Ingrediente.exist = (ingredienteId, next) => {
     })
 };
 
-Ingrediente.insert = (ingrediente, next) => {
+Persona.insert = (Persona, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO ingrediente SET ?`, [ingrediente], (error, result) => {
-        if ( error ) 
+    connection.query(`INSERT INTO persona SET ?`, [Persona], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
+        else
             return next( null, { success: true, result: result });
     });
 };
 
-Ingrediente.update = (ingrediente, next) => {
+Persona.update = (Persona, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE ingrediente SET ? WHERE idingrediente = ?', [ingrediente, ingrediente.idingrediente], (error, result) => {
+    connection.query('UPDATE persona SET ? WHERE idPersona = ?', [Persona, Persona.idPersona], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,20 +70,11 @@ Ingrediente.update = (ingrediente, next) => {
     });
 };
 
-Ingrediente.remove = (ingredienteId, next) => {
-    if( !connection )
-        return next('Connection refused');
-    connection.query('DELETE FROM ingrediente WHERE idingrediente = ?', [ingredienteId], (error, result) => {
-        if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
-        return next(null, { success: true, result: result, message: '¡Ingrediente eliminado!' });
-    });
-};
-
-Ingrediente.response = (res, error, data) => {
+Persona.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
-module.exports = Ingrediente;
+module.exports = Persona;

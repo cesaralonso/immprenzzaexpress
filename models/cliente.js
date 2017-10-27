@@ -1,11 +1,11 @@
 const connection = require('../config/db-connection');
 
-const Pais = {};
+const Cliente = {};
 
-Pais.all = next => {
+Cliente.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM pais', (error, result) => {
+    connection.query('SELECT * FROM cliente', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Pais.all = next => {
     });
 };
 
-Pais.findById = (paisId, next) => {
+Cliente.findById = (ClienteId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM pais WHERE idpais = ?', 
-        [paisId], (error, result) => {
+    connection.query('SELECT * FROM cliente WHERE idCliente = ?',
+    [ClienteId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -25,10 +25,10 @@ Pais.findById = (paisId, next) => {
     });
 };
 
-Pais.count = next => {
+Cliente.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(idpais) AS count FROM pais`, (error, result) => {
+    connection.query(`SELECT COUNT(idCliente) AS count FROM cliente`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Pais.count = next => {
     });
 };
 
-Pais.exist = (paisId, next) => {
+Cliente.exist = (ClienteId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM pais WHERE idpais = ?) AS exist', [paisId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM cliente WHERE idCliente = ?) AS exist', [ClienteId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,21 @@ Pais.exist = (paisId, next) => {
     })
 };
 
-Pais.insert = (pais, next) => {
+Cliente.insert = (Cliente, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO pais SET ?`, [pais], (error, result) => {
-        if ( error ) 
+    connection.query(`INSERT INTO cliente SET ?`, [Cliente], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
+        else
             return next( null, { success: true, result: result });
     });
 };
 
-Pais.update = (pais, next) => {
+Cliente.update = (Cliente, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE pais SET ? WHERE idpais = ?', [pais, pais.idpais], (error, result) => {
+    connection.query('UPDATE cliente SET ? WHERE idCliente = ?', [Cliente, Cliente.idCliente], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,20 +70,11 @@ Pais.update = (pais, next) => {
     });
 };
 
-Pais.remove = (paisId, next) => {
-    if( !connection )
-        return next('Connection refused');
-    connection.query('DELETE FROM pais WHERE idpais = ?', [paisId], (error, result) => {
-        if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
-        return next(null, { success: true, result: result, message: '¡Pais eliminado!' });
-    });
-};
-
-Pais.response = (res, error, data) => {
+Cliente.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
-module.exports = Pais;
+module.exports = Cliente;

@@ -23,31 +23,38 @@ router
             return Orden.response(res, error, data);
         });
     })
-    .delete('/:id', (req, res, next) => {
-        const ordenId = req.params.id;
-        Orden.remove( ordenId, (error, data) => {
-            return Orden.response(res, error, data);
-        });
-    })
     .patch('/', (req, res, next) => {
         const orden = {
-            idorden: req.body.idorden,
-            user_iduser: req.body.user_iduser,
-            horaSolicitado: req.body.horaSolicitado,
-            direccion_iddireccion: req.body.direccion_iddireccion,
-            status: req.body.status
-        };
+            idOrden: req.body.idOrden,
+            factura: req.body.factura,
+            fecha: req.body.fecha,
+            status_avance: req.body.status_avance,
+            status_pago: req.body.status_pago,
+            subtotal: req.body.subtotal,
+            total: req.body.total,
+            iva: req.body.iva,
+            deuda: req.body.deuda,
+            f_limite: req.body.f_limite,
+            Cliente_idCliente: req.body.Cliente_idCliente,
+            };
+
         Orden.update( orden, (error, data) => {
             return Orden.response(res, error, data);
         })
     })
     .post('/', (req, res, next) => {
         const orden = {
-            idorden: null,
-            user_iduser: req.body.user_iduser,
-            horaSolicitado: req.body.horaSolicitado,
-            direccion_iddireccion: req.body.direccion_iddireccion,
-            status: req.body.status
+            idOrden: null,
+            factura: req.body.factura,
+            fecha: req.body.fecha,
+            status_avance: req.body.status_avance,
+            status_pago: req.body.status_pago,
+            subtotal: req.body.subtotal,
+            total: req.body.total,
+            iva: req.body.iva,
+            deuda: req.body.deuda,
+            f_limite: req.body.f_limite,
+            Cliente_idCliente: req.body.Cliente_idCliente,
         };
         console.log(orden);
         Orden.insert( orden, (error, data) => {

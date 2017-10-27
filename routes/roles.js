@@ -31,8 +31,8 @@ router
     })
     .patch('/', (req, res, next) => {
         const rol = {
-            idrol: req.body.idrol,
-            descripcion: req.body.descripcion
+            idRol: req.body.idRol,
+            nombre: req.body.nombre,
         };
         Rol.update( rol, (error, data) => {
             return Rol.response(res, error, data);
@@ -40,14 +40,14 @@ router
     })
     .post('/', (req, res, next) => {
         const rol = {
-            idrol: null,
-            descripcion: req.body.descripcion
+            idRol: null,
+            nombre: req.body.nombre,
         }
         console.log(rol);
         Rol.insert( rol, (error, data) => {
             return Rol.response(res, error, data);
         });
     })
-    
+
 
 module.exports = router;

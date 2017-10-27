@@ -1,11 +1,11 @@
 const connection = require('../config/db-connection');
 
-const Enfermedad = {};
+const Trabajo = {};
 
-Enfermedad.all = next => {
+Trabajo.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM enfermedad', (error, result) => {
+    connection.query('SELECT * FROM trabajo', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Enfermedad.all = next => {
     });
 };
 
-Enfermedad.findById = (enfermedadId, next) => {
+Trabajo.findById = (TrabajoId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM enfermedad WHERE idenfermedad = ?', 
-        [enfermedadId], (error, result) => {
+    connection.query('SELECT * FROM trabajo WHERE idTrabajo = ?',
+    [TrabajoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -25,10 +25,10 @@ Enfermedad.findById = (enfermedadId, next) => {
     });
 };
 
-Enfermedad.count = next => {
+Trabajo.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(idenfermedad) AS count FROM enfermedad`, (error, result) => {
+    connection.query(`SELECT COUNT(idTrabajo) AS count FROM trabajo`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Enfermedad.count = next => {
     });
 };
 
-Enfermedad.exist = (enfermedadId, next) => {
+Trabajo.exist = (TrabajoId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM enfermedad WHERE idenfermedad = ?) AS exist', [enfermedadId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM trabajo WHERE idTrabajo = ?) AS exist', [TrabajoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,21 @@ Enfermedad.exist = (enfermedadId, next) => {
     })
 };
 
-Enfermedad.insert = (enfermedad, next) => {
+Trabajo.insert = (Trabajo, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO enfermedad SET ?`, [enfermedad], (error, result) => {
-        if ( error ) 
+    connection.query(`INSERT INTO trabajo SET ?`, [Trabajo], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
+        else
             return next( null, { success: true, result: result });
     });
 };
 
-Enfermedad.update = (enfermedad, next) => {
+Trabajo.update = (Trabajo, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE enfermedad SET ? WHERE idenfermedad = ?', [enfermedad, enfermedad.idenfermedad], (error, result) => {
+    connection.query('UPDATE trabajo SET ? WHERE idTrabajo = ?', [Trabajo, Trabajo.idTrabajo], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,20 +70,11 @@ Enfermedad.update = (enfermedad, next) => {
     });
 };
 
-Enfermedad.remove = (enfermedadId, next) => {
-    if( !connection )
-        return next('Connection refused');
-    connection.query('DELETE FROM enfermedad WHERE idenfermedad = ?', [enfermedadId], (error, result) => {
-        if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
-        return next(null, { success: true, result: result, message: '¡Enfermedad eliminada!' });
-    });
-};
-
-Enfermedad.response = (res, error, data) => {
+Trabajo.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
-module.exports = Enfermedad;
+module.exports = Trabajo;

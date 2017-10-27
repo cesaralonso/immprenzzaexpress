@@ -1,11 +1,11 @@
 const connection = require('../config/db-connection');
 
-const Ciudad = {};
+const TipoTrabajo = {};
 
-Ciudad.all = next => {
+TipoTrabajo.all = next => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM ciudad', (error, result) => {
+    connection.query('SELECT * FROM tipotrabajo', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Ciudad.all = next => {
     });
 };
 
-Ciudad.findById = (ciudadId, next) => {
+TipoTrabajo.findById = (TipoTrabajoId, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM ciudad WHERE idciudad = ?', 
-    [ciudadId], (error, result) => {
+    connection.query('SELECT * FROM tipotrabajo WHERE idTipoTrabajo = ?',
+    [TipoTrabajoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -25,10 +25,10 @@ Ciudad.findById = (ciudadId, next) => {
     });
 };
 
-Ciudad.count = next => {
+TipoTrabajo.count = next => {
     if ( !connection )
         return next('Connection refused');
-    connection.query(`SELECT COUNT(idciudad) AS count FROM ciudad`, (error, result) => {
+    connection.query(`SELECT COUNT(idTipoTrabajo) AS count FROM tipotrabajo`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Ciudad.count = next => {
     });
 };
 
-Ciudad.exist = (ciudadId, next) => {
+TipoTrabajo.exist = (TipoTrabajoId, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT EXISTS(SELECT 1 FROM ciudad WHERE idciudad = ?) AS exist', [ciudadId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM tipotrabajo WHERE idTipoTrabajo = ?) AS exist', [TipoTrabajoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,21 @@ Ciudad.exist = (ciudadId, next) => {
     })
 };
 
-Ciudad.insert = (ciudad, next) => {
+TipoTrabajo.insert = (TipoTrabajo, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query(`INSERT INTO ciudad SET ?`, [ciudad], (error, result) => {
-        if ( error ) 
+    connection.query(`INSERT INTO tipotrabajo SET ?`, [TipoTrabajo], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
+        else
             return next( null, { success: true, result: result });
     });
 };
 
-Ciudad.update = (ciudad, next) => {
+TipoTrabajo.update = (TipoTrabajo, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('UPDATE ciudad SET ? WHERE idciudad = ?', [ciudad, ciudad.idciudad], (error, result) => {
+    connection.query('UPDATE tipotrabajo SET ? WHERE idTipoTrabajo = ?', [TipoTrabajo, TipoTrabajo.idTipoTrabajo], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,11 +70,11 @@ Ciudad.update = (ciudad, next) => {
     });
 };
 
-Ciudad.response = (res, error, data) => {
+TipoTrabajo.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
-module.exports = Ciudad;
+module.exports = TipoTrabajo;

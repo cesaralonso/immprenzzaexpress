@@ -1,11 +1,11 @@
 const connection = require('../config/db-connection');
 
-const Telefono = {};
+const Checkout = {};
 
-Telefono.all = next => {
+Checkout.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM telefono', (error, result) => {
+    connection.query('SELECT * FROM checkout', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Telefono.all = next => {
     });
 };
 
-Telefono.findById = (telefonoId, next) => {
+Checkout.findById = (CheckoutId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM telefono WHERE idtelefono = ?', 
-        [telefonoId], (error, result) => {
+    connection.query('SELECT * FROM checkout WHERE idCheckout = ?',
+    [CheckoutId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -25,10 +25,10 @@ Telefono.findById = (telefonoId, next) => {
     });
 };
 
-Telefono.count = next => {
+Checkout.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(idtelefono) AS count FROM telefono`, (error, result) => {
+    connection.query(`SELECT COUNT(idCheckout) AS count FROM checkout`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Telefono.count = next => {
     });
 };
 
-Telefono.exist = (telefonoId, next) => {
+Checkout.exist = (CheckoutId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM telefono WHERE idtelefono = ?) AS exist', [telefonoId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM checkout WHERE idCheckout = ?) AS exist', [CheckoutId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,21 @@ Telefono.exist = (telefonoId, next) => {
     })
 };
 
-Telefono.insert = (telefono, next) => {
+Checkout.insert = (Checkout, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO telefono SET ?`, [telefono], (error, result) => {
-        if ( error ) 
+    connection.query(`INSERT INTO checkout SET ?`, [Checkout], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
+        else
             return next( null, { success: true, result: result });
     });
 };
 
-Telefono.update = (telefono, next) => {
+Checkout.update = (Checkout, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE telefono SET ? WHERE idtelefono = ?', [telefono, telefono.idtelefono], (error, result) => {
+    connection.query('UPDATE checkout SET ? WHERE idCheckout = ?', [Checkout, Checkout.idCheckout], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,20 +70,11 @@ Telefono.update = (telefono, next) => {
     });
 };
 
-Telefono.remove = (telefonoId, cb) => {
-    if( connection ) {
-        connection.query('DELETE FROM telefono WHERE idtelefono = ?', [telefonoId], (error, result) => {
-            if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
-            return next(null, { success: true, result: result, message: 'Teléfono eliminado!' });
-        });
-    }
-};
-
-Telefono.response = (res, error, data) => {
+Checkout.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
-module.exports = Telefono;
+module.exports = Checkout;

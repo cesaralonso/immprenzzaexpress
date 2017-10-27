@@ -1,11 +1,11 @@
 const connection = require('../config/db-connection');
 
-const Oferta = {};
+const Puesto = {};
 
-Oferta.all = next => {
+Puesto.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM oferta', (error, result) => {
+    connection.query('SELECT * FROM puesto', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Oferta.all = next => {
     });
 };
 
-Oferta.findById = (ofertaId, next) => {
+Puesto.findById = (PuestoId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM oferta WHERE idoferta = ?', 
-        [ofertaId], (error, result) => {
+    connection.query('SELECT * FROM puesto WHERE idPuesto = ?',
+    [PuestoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -25,10 +25,10 @@ Oferta.findById = (ofertaId, next) => {
     });
 };
 
-Oferta.count = next => {
+Puesto.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(idoferta) AS count FROM oferta`, (error, result) => {
+    connection.query(`SELECT COUNT(idPuesto) AS count FROM puesto`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Oferta.count = next => {
     });
 };
 
-Oferta.exist = (ofertaId, next) => {
+Puesto.exist = (PuestoId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM oferta WHERE idoferta = ?) AS exist', [ofertaId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM puesto WHERE idPuesto = ?) AS exist', [PuestoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,23 @@ Oferta.exist = (ofertaId, next) => {
     })
 };
 
-Oferta.insert = (oferta, next) => {
+Puesto.insert = (puesto, next) => {
+  console.log('puesto',puesto);
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO oferta SET ?`, [oferta], (error, result) => {
-        if ( error ) 
+    connection.query('INSERT INTO puesto SET ?', [puesto], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
-            return next( null, { success: true, result: result });
+        else
+            return next( null, { success: true, result: result, }
+            );
     });
 };
 
-Oferta.update = (oferta, next) => {
+Puesto.update = (puesto, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE oferta SET ? WHERE idoferta = ?', [oferta, oferta.idoferta], (error, result) => {
+    connection.query('UPDATE puesto SET ? WHERE idPuesto = ?', [puesto, Puesto.idPuesto], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,20 +72,11 @@ Oferta.update = (oferta, next) => {
     });
 };
 
-Oferta.remove = (ofertaId, next) => {
-    if( !connection )
-        return next('Connection refused');
-    connection.query('DELETE FROM oferta WHERE idoferta = ?', [ofertaId], (error, result) => {
-        if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
-        return next(null, { success: true, result: result, message: '¡Oferta eliminada!' });
-    });
-};
-
-Oferta.response = (res, error, data) => {
+Puesto.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
-module.exports = Oferta;
+module.exports = Puesto;

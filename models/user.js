@@ -7,19 +7,19 @@ const mySecretPass = process.env.SECRET_PASSWORD;
 
 const User = {};
 
-User.register = (user, next) => {
+User.register = (User, next) => {
     if ( !connection )
         return next('Connection refused');
     // Hash password
-    bcrypt.hash(user.password, saltRounds)
+    bcrypt.hash(User.password, saltRounds)
     .then( hash => {
-        user.password = hash;
+        User.password = hash;
         // Insert into table
-        connection.query('INSERT INTO user SET ?', [user], ( error, result ) => {
+        connection.query('INSERT INTO user SET ?', [User], ( error, result ) => {
             if ( error ) {
-                // WARNING: To take effect, user table must have the email field as unique column
+                // WARNING: To take effect, User table must have the email field as unique column
                 if (error.code === 'ER_DUP_ENTRY') {
-                    return next( null, { 
+                    return next( null, {
                         success: false,
                         error: error,
                         message: 'Este email ya esta en uso'
@@ -27,8 +27,8 @@ User.register = (user, next) => {
                 } else
                     return next({ success: false, error: error });
             }
-                
-            return next( null, { 
+
+            return next( null, {
                 success: true,
                 result: result,
                 message: '¡Registro exitoso!'
@@ -43,28 +43,28 @@ User.login = ( email, password, next ) => {
         return next('Connection refused');
 
     connection.query(`
-        SELECT iduser, email, password FROM user WHERE email = ?`, [email], (error, result) => {
+        SELECT idUser, Usuario, password FROM user WHERE Usuario = ?`, [Usuario], (error, result) => {
         if ( error )
             return next( error );
         if ( result[0] ) {
             const hash = result[0].password.toString();
             bcrypt.compare(password, hash, ( error, res ) => {
                 if ( res ) {
-                    const user = {
-                        id_user: result[0].iduser,
-                        email: result[0].email,
+                    const User = {
+                        id_User: result[0].idUser,
+                        Usuario: result[0].Usuario,
                         password: hash
                     }
                     // Generate token
-                    const token = jwt.sign(user, mySecretPass, {
+                    const token = jwt.sign(User, mySecretPass, {
                         expiresIn: 60 * 60 * 24
                     });
-                    return next( null, { 
+                    return next( null, {
                         success: true,
                         message: 'Has iniciado sessión correctamente',
-                        token: 'JWT ' + token 
+                        token: 'JWT ' + token
                     });
-                } else 
+                } else
                     return next(null, {
                         success: false,
                         message: 'Password incorrecto'
@@ -73,7 +73,7 @@ User.login = ( email, password, next ) => {
         } else {
             return next(null, {
                 success: false,
-                message: 'El email y password no coinciden'
+                message: 'El usuario y password no coinciden'
             })
         }
     });
@@ -90,11 +90,11 @@ User.all = next => {
     });
 };
 
-User.findById = (userId, next) => {
+User.findById = (UserId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM user WHERE iduser = ?', 
-        [userId], (error, result) => {
+        connection.query('SELECT * FROM user WHERE idUser = ?',
+        [UserId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -105,7 +105,7 @@ User.findById = (userId, next) => {
 User.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(iduser) AS count FROM user`, (error, result) => {
+        connection.query(`SELECT COUNT(idUser) AS count FROM user`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -113,10 +113,10 @@ User.count = next => {
     });
 };
 
-User.exist = (userId, next) => {
+User.exist = (UserId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM user WHERE iduser = ?) AS exist', [userId], (error, result) => {
+        connection.query('SELECT EXISTS(SELECT 1 FROM user WHERE idUser = ?) AS exist', [UserId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -125,10 +125,10 @@ User.exist = (userId, next) => {
     })
 };
 
-User.update = (user, next) => {
+User.update = (User, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE user SET ? WHERE iduser = ?', [user, user.iduser], (error, result) => {
+        connection.query('UPDATE user SET ? WHERE idUser = ?', [User, User.idUser], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -136,10 +136,10 @@ User.update = (user, next) => {
     });
 };
 
-User.remove = (userId, next) => {
+User.remove = (UserId, next) => {
     if( !connection )
         return next('Connection refused');
-    connection.query('DELETE FROM user WHERE iduser = ?', [userId], (error, result) => {
+    connection.query('DELETE FROM user WHERE idUser = ?', [UserId], (error, result) => {
         if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
         return next(null, { success: true, result: result, message: '¡Usuario eliminado!' });
     });

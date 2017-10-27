@@ -1,11 +1,11 @@
 const connection = require('../config/db-connection');
 
-const Horario = {};
+const Modulo = {};
 
-Horario.all = next => {
+Modulo.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM horario', (error, result) => {
+    connection.query('SELECT * FROM modulo', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Horario.all = next => {
     });
 };
 
-Horario.findById = (horarioId, next) => {
+Modulo.findById = (ModuloId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM horario WHERE idhorario = ?', 
-        [horarioId], (error, result) => {
+    connection.query('SELECT * FROM modulo WHERE idModulo = ?',
+    [ModuloId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -25,10 +25,10 @@ Horario.findById = (horarioId, next) => {
     });
 };
 
-Horario.count = next => {
+Modulo.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(idhorario) AS count FROM horario`, (error, result) => {
+    connection.query(`SELECT COUNT(idModulo) AS count FROM modulo`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Horario.count = next => {
     });
 };
 
-Horario.exist = (horarioId, next) => {
+Modulo.exist = (ModuloId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM horario WHERE idhorario = ?) AS exist', [horarioId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM modulo WHERE idModulo = ?) AS exist', [ModuloId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,21 @@ Horario.exist = (horarioId, next) => {
     })
 };
 
-Horario.insert = (horario, next) => {
+Modulo.insert = (Modulo, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO horario SET ?`, [horario], (error, result) => {
-        if ( error ) 
+    connection.query(`INSERT INTO modulo SET ?`, [Modulo], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
+        else
             return next( null, { success: true, result: result });
     });
 };
 
-Horario.update = (horario, next) => {
+Modulo.update = (Modulo, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE horario SET ? WHERE idhorario = ?', [horario, horario.idhorario], (error, result) => {
+    connection.query('UPDATE modulo SET ? WHERE idModulo = ?', [Modulo, Modulo.idModulo], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,20 +70,11 @@ Horario.update = (horario, next) => {
     });
 };
 
-Horario.remove = (horarioId, next) => {
-    if( !connection )
-        return next('Connection refused');
-    connection.query('DELETE FROM horario WHERE idhorario = ?', [horarioId], (error, result) => {
-        if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
-        return next(null, { success: true, result: result, message: '¡Horario eliminado!' });
-    });
-};
-
-Horario.response = (res, error, data) => {
+Modulo.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
-module.exports = Horario;
+module.exports = Modulo;

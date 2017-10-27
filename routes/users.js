@@ -5,23 +5,21 @@ const passport = require('passport');
 router
     .post('/register', (req, res, next) => {
         const user = {
-            nombres: req.body.nombres,
-            apellidos: req.body.apellidos,
-            email: req.body.email,
-            password: req.body.password,
-            telefono_idtelefono: req.body.telefono_idtelefono,
-            rol_idrol: req.body.rol_idrol,
+          idUser: null,
+          usuario: req.body.usuario,
+          password: req.body.password,
+          Rol_idRol: req.body.Rol_idRol,
         }
         User.register( user, (error, data) =>{
             User.response(res, error, data);
         });
     })
     .post('/login', (req, res, next) => {
-        const email = req.body.email;
+        const usuario = req.body.usuario;
         const password = req.body.password;
-        console.log(email)
+        console.log(usuario)
         console.log(password)
-        User.login( email, password, ( error, data ) => {
+        User.login( usuario, password, ( error, data ) => {
             return User.response( res, error, data );
         });
     })
@@ -31,8 +29,8 @@ router
     })
     // .post('/profile', (req, res, next) => { // http://passportjs.org/docs -> Custom Callback
     //     passport.authenticate('jwt', { session: false}, (err, user, info) => {
-    //         console.log(user.iduser);
-    //         // 
+    //         console.log(user.idUser);
+    //         //
     //     })(req, res, next);
     // })
     .get('/', (req, res, next) => {
@@ -64,12 +62,10 @@ router
     })
     .patch('/', (req, res, next) => {
         const user = {
-            iduser: req.body.iduser,
-            apellidos: req.body.apellidos,
-            email: req.body.email,
-            password: req.body.password,
-            telefono_idtelefono: req.body.telefono_idtelefono,
-            rol_idrol: req.body.rol_idrol
+          idUser: req.body.idUser,
+          usuario: req.body.usuario,
+          password: req.body.password,
+          Rol_idRol: req.body.Rol_idRol,
         };
         User.update( user, (error, data) => {
             return User.response(res, error, data);

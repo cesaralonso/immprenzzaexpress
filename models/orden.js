@@ -5,7 +5,7 @@ const Orden = {};
 Orden.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM orden', (error, result) => {
+    connection.query('SELECT * FROM orden', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -13,11 +13,11 @@ Orden.all = next => {
     });
 };
 
-Orden.findById = (ordenId, next) => {
+Orden.findById = (OrdenId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM orden WHERE idorden = ?', 
-        [ordenId], (error, result) => {
+    connection.query('SELECT * FROM orden WHERE idOrden = ?',
+    [OrdenId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -28,7 +28,7 @@ Orden.findById = (ordenId, next) => {
 Orden.count = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`SELECT COUNT(idorden) AS count FROM orden`, (error, result) => {
+    connection.query(`SELECT COUNT(idOrden) AS count FROM orden`, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -36,10 +36,10 @@ Orden.count = next => {
     });
 };
 
-Orden.exist = (ordenId, next) => {
+Orden.exist = (OrdenId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT EXISTS(SELECT 1 FROM orden WHERE idorden = ?) AS exist', [ordenId], (error, result) => {
+    connection.query('SELECT EXISTS(SELECT 1 FROM orden WHERE idOrden = ?) AS exist', [OrdenId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -48,21 +48,21 @@ Orden.exist = (ordenId, next) => {
     })
 };
 
-Orden.insert = (orden, next) => {
+Orden.insert = (Orden, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO orden SET ?`, [orden], (error, result) => {
-        if ( error ) 
+    connection.query(`INSERT INTO orden SET ?`, [Orden], (error, result) => {
+        if ( error )
             return next({ success: false, error: error })
-        else 
+        else
             return next( null, { success: true, result: result });
     });
 };
 
-Orden.update = (orden, next) => {
+Orden.update = (Orden, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE orden SET ? WHERE idorden = ?', [orden, orden.idorden], (error, result) => {
+    connection.query('UPDATE orden SET ? WHERE idOrden = ?', [Orden, Orden.idOrden], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else
@@ -70,19 +70,10 @@ Orden.update = (orden, next) => {
     });
 };
 
-Orden.remove = (ordenId, next) => {
-    if( !connection )
-        return next('Connection refused');
-    connection.query('DELETE FROM orden WHERE idorden = ?', [ordenId], (error, result) => {
-        if(error) return next({ success: false, error: error, message: 'An error has happened while deleting table' });
-        return next(null, { success: true, result: result, message: '¡Orden eliminada!' });
-    });
-};
-
 Orden.response = (res, error, data) => {
     if ( error )
         res.status(500).json(error);
-    else 
+    else
         res.status(200).json(data);
 };
 
