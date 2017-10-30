@@ -48,10 +48,10 @@ Checkout.exist = (CheckoutId, next) => {
     })
 };
 
-Checkout.insert = (Checkout, next) => {
+Checkout.insert = (checkout, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query(`INSERT INTO checkout SET ?`, [Checkout], (error, result) => {
+    connection.query(`INSERT INTO checkout SET ?`, [checkout], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -60,6 +60,7 @@ Checkout.insert = (Checkout, next) => {
 };
 
 Checkout.update = (Checkout, next) => {
+  console.log(Checkout);
     if ( !connection )
         return next('Connection refused');
     connection.query('UPDATE checkout SET ? WHERE idCheckout = ?', [Checkout, Checkout.idCheckout], (error, result) => {

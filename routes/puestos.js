@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const Puesto = require('../models/puesto');
 
+
+
+
 router
     .get('/', (req, res, next) => {
         Puesto.all( (error, data) => {
@@ -32,12 +35,14 @@ router
             return Puesto.response(res, error, data);
         })
     })
+
     .post('/', (req, res, next) => {
-        const puesto = {
+      const puesto = {
             idPuesto: null,
             nombre: req.body.nombre,
         };
-        console.log(puesto);
+        console.log('puesto:', puesto);
+
         Puesto.insert( puesto, (error, data) => {
             return Puesto.response(res, error, data);
         });

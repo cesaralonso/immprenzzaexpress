@@ -1,5 +1,6 @@
 const connection = require('../config/db-connection');
 
+
 const Puesto = {};
 
 Puesto.all = next => {
@@ -52,7 +53,7 @@ Puesto.insert = (puesto, next) => {
   console.log('puesto',puesto);
     if ( !connection )
         return next('Connection refused');
-    connection.query('INSERT INTO puesto SET ?', [puesto], (error, result) => {
+    connection.query('INSERT INTO puesto SET ?', puesto, (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -64,7 +65,7 @@ Puesto.insert = (puesto, next) => {
 Puesto.update = (puesto, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('UPDATE puesto SET ? WHERE idPuesto = ?', [puesto, Puesto.idPuesto], (error, result) => {
+    connection.query('UPDATE puesto SET ? WHERE idPuesto = ?', [puesto, puesto.idPuesto], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else

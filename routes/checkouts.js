@@ -28,7 +28,7 @@ router
             idCheckout: req.body.idCheckout,
             entrada: req.body.entrada,
             salida: req.body.salida,
-            tiempotrabajado: req.body.tiempotrabajado,
+            tiempo_trabajado: req.body.tiempo_trabajado,
             Personal_idPersonal: req.body.Personal_idPersonal,
         };
         Checkout.update( checkout, (error, data) => {
@@ -40,7 +40,7 @@ router
             idCheckout: null,
             entrada: req.body.entrada,
             salida: req.body.salida,
-            tiempotrabajado: req.body.tiempotrabajado,
+            tiempo_trabajado: req.body.tiempo_trabajado,
             Personal_idPersonal: req.body.Personal_idPersonal,
         };
         console.log(checkout);

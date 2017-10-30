@@ -59,10 +59,10 @@ Abono.insert = (Abono, next) => {
     });
 };
 
-Abono.update = (Abono, next) => {
+Abono.update = (abono, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('UPDATE abono SET ? WHERE idAbono = ?', [Abono, Abono.idAbono], (error, result) => {
+    connection.query('UPDATE abono SET ? WHERE idAbono = ?', [abono, abono.idAbono], (error, result) => {
         if ( error )
             return next({ success: false, error: error });
         else

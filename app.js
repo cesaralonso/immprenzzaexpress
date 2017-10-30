@@ -5,6 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const passport = require('passport');
 
+
 //Route importation.
 const rol = require('./routes/roles');
 const user = require('./routes/users');
@@ -27,6 +28,8 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+
+
 
 // Initialize passport
 app.use(passport.initialize());
