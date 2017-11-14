@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Orden = require('../models/orden');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -23,6 +24,16 @@ router
             return Orden.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const ordenId = req.params.id;
+        Orden.logicRemove( ordenId, (error, data) => {
+            return Orden.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const orden = {
             idOrden: req.body.idOrden,
@@ -55,6 +66,7 @@ router
             deuda: req.body.deuda,
             f_limite: req.body.f_limite,
             Cliente_idCliente: req.body.Cliente_idCliente,
+            baja: false
         };
         console.log(orden);
         Orden.insert( orden, (error, data) => {

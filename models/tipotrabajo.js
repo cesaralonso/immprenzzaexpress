@@ -5,7 +5,7 @@ const TipoTrabajo = {};
 TipoTrabajo.all = next => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM tipotrabajo', (error, result) => {
+    connection.query('SELECT * FROM tipotrabajo HAVING baja IS NULL OR baja = false', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -16,7 +16,7 @@ TipoTrabajo.all = next => {
 TipoTrabajo.findById = (TipoTrabajoId, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM tipotrabajo WHERE idTipoTrabajo = ?',
+    connection.query('SELECT * FROM tipotrabajo WHERE idTipoTrabajo = ? HAVING baja IS NULL OR baja = false',
     [TipoTrabajoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
@@ -53,9 +53,9 @@ TipoTrabajo.insert = (TipoTrabajo, next) => {
         return next('Connection refused');
     connection.query(`INSERT INTO tipotrabajo SET ?`, [TipoTrabajo], (error, result) => {
         if ( error )
-            return next({ success: false, error: error })
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo' })
         else
-            return next( null, { success: true, result: result });
+            return next( null, { success: true, result: result, message: 'Registro agregado correctamente' });
     });
 };
 
@@ -64,9 +64,20 @@ TipoTrabajo.update = (TipoTrabajo, next) => {
         return next('Connection refused');
     connection.query('UPDATE tipotrabajo SET ? WHERE idTipoTrabajo = ?', [TipoTrabajo, TipoTrabajo.idTipoTrabajo], (error, result) => {
         if ( error )
-            return next({ success: false, error: error });
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo'});
         else
-            return next( null, { success: true, result: result});
+            return next( null, { success: true, result: result, message: 'Datos actualizados'});
+    });
+};
+
+TipoTrabajo.logicRemove = (tipotrabajoId, next) => {
+    if( !connection )
+        return next('Connection refused');
+    connection.query('UPDATE tipotrabajo SET baja = 1 WHERE idTipoTrabajo = ?', [tipotrabajoId], (error, result) => {
+        if ( error )
+            return next({ success: false, error: error, message: 'Hubo un error al eliminar este registro' });
+        else
+            return next( null, { success: true, result: result, message: 'TipoTrabajo eliminado' });
     });
 };
 

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Abono = require('../models/abono');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -23,6 +24,16 @@ router
             return Abono.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const abonoId = req.params.id;
+        Abono.logicRemove( abonoId, (error, data) => {
+            return Abono.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const abono = {
             idAbono: req.body.idAbono,
@@ -42,6 +53,7 @@ router
             fecha: req.body.fecha,
             cantidadRestante: req.body.cantidadRestante,
             Orden_idOrden: req.body.Orden_idOrden,
+            baja: false
           };
         console.log(abono);
         Abono.insert( abono, (error, data) => {

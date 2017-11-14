@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Puesto = require('../models/puesto');
+const passport = require('passport');
 
 
 
@@ -26,6 +27,16 @@ router
             return Puesto.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const puestoId = req.params.id;
+        Puesto.logicRemove( puestoId, (error, data) => {
+            return Puesto.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const puesto = {
             idPuesto: req.body.idPuesto,
@@ -40,6 +51,7 @@ router
       const puesto = {
             idPuesto: null,
             nombre: req.body.nombre,
+            baja: false
         };
         console.log('puesto:', puesto);
 

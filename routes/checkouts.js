@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Checkout = require('../models/checkout');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -23,6 +24,16 @@ router
             return Checkout.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const checkoutId = req.params.id;
+        Checkout.logicRemove( checkoutId, (error, data) => {
+            return Checkout.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const checkout = {
             idCheckout: req.body.idCheckout,
@@ -42,6 +53,7 @@ router
             salida: req.body.salida,
             tiempo_trabajado: req.body.tiempo_trabajado,
             Personal_idPersonal: req.body.Personal_idPersonal,
+            baja: false
         };
         console.log(checkout);
         Checkout.insert( checkout, (error, data) => {

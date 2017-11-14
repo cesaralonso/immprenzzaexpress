@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Rol = require('../models/rol');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -42,6 +43,7 @@ router
         const rol = {
             idRol: null,
             nombre: req.body.nombre,
+            baja: false
         }
         console.log(rol);
         Rol.insert( rol, (error, data) => {

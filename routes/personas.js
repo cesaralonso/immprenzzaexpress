@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Persona = require('../models/persona');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -23,6 +24,16 @@ router
             return Persona.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const personaId = req.params.id;
+        Persona.logicRemove( personaId, (error, data) => {
+            return Persona.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const persona = {
             idPersona: req.body.idPersona,
@@ -46,6 +57,7 @@ router
             rfc: req.body.rfc,
             telefono: req.body.telefono,
             domicilio: req.body.domicilio,
+            baja: false
         };
         console.log(persona);
         Persona.insert( persona, (error, data) => {

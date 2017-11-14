@@ -5,7 +5,7 @@ const Permiso = {};
 Permiso.all = next => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM permiso', (error, result) => {
+    connection.query('SELECT * FROM permiso HAVING baja IS NULL OR baja = false', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -16,7 +16,7 @@ Permiso.all = next => {
 Permiso.findById = (PermisoId, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM permiso WHERE idPermiso = ?',
+    connection.query('SELECT * FROM permiso WHERE idPermiso = ? HAVING baja IS NULL OR baja = false',
     [PermisoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
@@ -51,11 +51,11 @@ Permiso.exist = (PermisoId, next) => {
 Permiso.insert = (Permiso, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query(`INSERT INTO permiso SET ?`, [Permiso], (error, result) => {
+    connection.query(`INSERT INTO abono SET ?`, [Permiso], (error, result) => {
         if ( error )
-            return next({ success: false, error: error })
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo' })
         else
-            return next( null, { success: true, result: result });
+            return next( null, { success: true, result: result, message: 'Registro agregado correctamente' });
     });
 };
 
@@ -64,9 +64,20 @@ Permiso.update = (Permiso, next) => {
         return next('Connection refused');
     connection.query('UPDATE permiso SET ? WHERE idPermiso = ?', [Permiso, Permiso.idPermiso], (error, result) => {
         if ( error )
-            return next({ success: false, error: error });
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo'});
         else
-            return next( null, { success: true, result: result});
+            return next( null, { success: true, result: result, message: 'Datos actualizados'});
+    });
+};
+
+Permiso.logicRemove = (abonoId, next) => {
+    if( !connection )
+        return next('Connection refused');
+    connection.query('UPDATE abono SET baja = 1 WHERE idPermiso = ?', [abonoId], (error, result) => {
+        if ( error )
+            return next({ success: false, error: error, message: 'Hubo un error al eliminar este registro' });
+        else
+            return next( null, { success: true, result: result, message: 'Permiso eliminado' });
     });
 };
 

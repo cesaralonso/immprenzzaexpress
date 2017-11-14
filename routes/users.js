@@ -9,6 +9,7 @@ router
           usuario: req.body.usuario,
           password: req.body.password,
           Rol_idRol: req.body.Rol_idRol,
+          baja: false
         }
         User.register( user, (error, data) =>{
             User.response(res, error, data);

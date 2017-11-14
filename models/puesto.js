@@ -6,7 +6,7 @@ const Puesto = {};
 Puesto.all = next => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM puesto', (error, result) => {
+    connection.query('SELECT * FROM puesto HAVING baja IS NULL OR baja = false', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -17,7 +17,7 @@ Puesto.all = next => {
 Puesto.findById = (PuestoId, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM puesto WHERE idPuesto = ?',
+    connection.query('SELECT * FROM puesto WHERE idPuesto = ? HAVING baja IS NULL OR baja = false',
     [PuestoId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
@@ -49,27 +49,36 @@ Puesto.exist = (PuestoId, next) => {
     })
 };
 
-Puesto.insert = (puesto, next) => {
-  console.log('puesto',puesto);
+Puesto.insert = (Puesto, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('INSERT INTO puesto SET ?', puesto, (error, result) => {
+    connection.query(`INSERT INTO puesto SET ?`, [Puesto], (error, result) => {
         if ( error )
-            return next({ success: false, error: error })
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo' })
         else
-            return next( null, { success: true, result: result, }
-            );
+            return next( null, { success: true, result: result, message: 'Registro agregado correctamente' });
     });
 };
 
-Puesto.update = (puesto, next) => {
+Puesto.update = (Puesto, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('UPDATE puesto SET ? WHERE idPuesto = ?', [puesto, puesto.idPuesto], (error, result) => {
+    connection.query('UPDATE puesto SET ? WHERE idPuesto = ?', [Puesto, Puesto.idPuesto], (error, result) => {
         if ( error )
-            return next({ success: false, error: error });
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo'});
         else
-            return next( null, { success: true, result: result});
+            return next( null, { success: true, result: result, message: 'Datos actualizados'});
+    });
+};
+
+Puesto.logicRemove = (puestoId, next) => {
+    if( !connection )
+        return next('Connection refused');
+    connection.query('UPDATE puesto SET baja = 1 WHERE idPuesto = ?', [puestoId], (error, result) => {
+        if ( error )
+            return next({ success: false, error: error, message: 'Hubo un error al eliminar este registro' });
+        else
+            return next( null, { success: true, result: result, message: 'Puesto eliminado' });
     });
 };
 

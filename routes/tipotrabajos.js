@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Tipotrabajo = require('../models/tipotrabajo');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -23,6 +24,16 @@ router
             return Tipotrabajo.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const tipotrabajoId = req.params.id;
+        Tipotrabajo.logicRemove( tipotrabajoId, (error, data) => {
+            return Tipotrabajo.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const tipotrabajo = {
             idTipoTrabajo: req.body.idTipoTrabajo,
@@ -38,6 +49,7 @@ router
             idTipoTrabajo: null,
             nombre: req.body.nombre,
             costo: req.body.costo,
+            baja: false
           };
         console.log(tipotrabajo);
         Tipotrabajo.insert( tipotrabajo, (error, data) => {

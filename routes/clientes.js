@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Cliente = require('../models/cliente');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -23,6 +24,16 @@ router
             return Cliente.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const clienteId = req.params.id;
+        Cliente.logicRemove( clienteId, (error, data) => {
+            return Cliente.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const cliente = {
             idCliente: req.body.idCliente,
@@ -36,6 +47,7 @@ router
         const cliente = {
             idCliente: null,
             Persona_idPersona: req.body.Persona_idPersona,
+            baja: false
         };
         console.log(cliente);
         Cliente.insert( cliente, (error, data) => {

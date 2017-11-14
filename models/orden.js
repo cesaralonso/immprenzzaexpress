@@ -5,7 +5,7 @@ const Orden = {};
 Orden.all = next => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM orden', (error, result) => {
+    connection.query('SELECT * FROM orden HAVING baja IS NULL OR baja = false', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -16,7 +16,7 @@ Orden.all = next => {
 Orden.findById = (OrdenId, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM orden WHERE idOrden = ?',
+    connection.query('SELECT * FROM orden WHERE idOrden = ? HAVING baja IS NULL OR baja = false',
     [OrdenId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
@@ -53,9 +53,9 @@ Orden.insert = (Orden, next) => {
         return next('Connection refused');
     connection.query(`INSERT INTO orden SET ?`, [Orden], (error, result) => {
         if ( error )
-            return next({ success: false, error: error })
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo' })
         else
-            return next( null, { success: true, result: result });
+            return next( null, { success: true, result: result, message: 'Registro agregado correctamente' });
     });
 };
 
@@ -64,9 +64,20 @@ Orden.update = (Orden, next) => {
         return next('Connection refused');
     connection.query('UPDATE orden SET ? WHERE idOrden = ?', [Orden, Orden.idOrden], (error, result) => {
         if ( error )
-            return next({ success: false, error: error });
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo'});
         else
-            return next( null, { success: true, result: result});
+            return next( null, { success: true, result: result, message: 'Datos actualizados'});
+    });
+};
+
+Orden.logicRemove = (ordenId, next) => {
+    if( !connection )
+        return next('Connection refused');
+    connection.query('UPDATE orden SET baja = 1 WHERE idOrden = ?', [ordenId], (error, result) => {
+        if ( error )
+            return next({ success: false, error: error, message: 'Hubo un error al eliminar este registro' });
+        else
+            return next( null, { success: true, result: result, message: 'Orden eliminado' });
     });
 };
 

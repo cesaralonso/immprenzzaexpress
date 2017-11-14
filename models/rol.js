@@ -5,7 +5,7 @@ const Rol = {};
 Rol.all = next => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM rol', (error, result) => {
+        connection.query('SELECT * FROM rol HAVING baja IS NULL OR baja = false', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -16,7 +16,7 @@ Rol.all = next => {
 Rol.findById = (rolId, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('SELECT * FROM rol WHERE idRol = ?',
+        connection.query('SELECT * FROM rol WHERE idRol = ? HAVING baja IS NULL OR baja = false',
         [rolId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
@@ -48,28 +48,38 @@ Rol.exist = (rolId, next) => {
     })
 };
 
-Rol.insert = (rol, next) => {
+Rol.insert = (Rol, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query(`INSERT INTO rol SET ?`, [rol], (error, result) => {
+    connection.query(`INSERT INTO rol SET ?`, [Rol], (error, result) => {
         if ( error )
-            return next({ success: false, error: error })
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo' })
         else
-            return next( null, { success: true, result: result });
+            return next( null, { success: true, result: result, message: 'Registro agregado correctamente' });
     });
 };
 
-Rol.update = (rol, next) => {
+Rol.update = (Rol, next) => {
     if ( !connection )
         return next('Connection refused');
-        connection.query('UPDATE rol SET ? WHERE idRol = ?', [rol, rol.idrol], (error, result) => {
+    connection.query('UPDATE rol SET ? WHERE idRol = ?', [Rol, Rol.idRol], (error, result) => {
         if ( error )
-            return next({ success: false, error: error });
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo'});
         else
-            return next( null, { success: true, result: result});
+            return next( null, { success: true, result: result, message: 'Datos actualizados'});
     });
 };
 
+Rol.logicRemove = (rolId, next) => {
+    if( !connection )
+        return next('Connection refused');
+    connection.query('UPDATE rol SET baja = 1 WHERE idRol = ?', [rolId], (error, result) => {
+        if ( error )
+            return next({ success: false, error: error, message: 'Hubo un error al eliminar este registro' });
+        else
+            return next( null, { success: true, result: result, message: 'Rol eliminado' });
+    });
+};
 Rol.remove = (rolId, cb) => {
     if( connection ) {
         connection.query('DELETE FROM rol WHERE idRol = ?', [rolId], (error, result) => {

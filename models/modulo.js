@@ -5,7 +5,7 @@ const Modulo = {};
 Modulo.all = next => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM modulo', (error, result) => {
+    connection.query('SELECT * FROM modulo HAVING baja IS NULL OR baja = false', (error, result) => {
         if ( error )
             return next({ success: false, error: error })
         else
@@ -16,7 +16,7 @@ Modulo.all = next => {
 Modulo.findById = (ModuloId, next) => {
     if ( !connection )
         return next('Connection refused');
-    connection.query('SELECT * FROM modulo WHERE idModulo = ?',
+    connection.query('SELECT * FROM modulo WHERE idModulo = ? HAVING baja IS NULL OR baja = false',
     [ModuloId], (error, result) => {
         if ( error )
             return next({ success: false, error: error })
@@ -53,9 +53,9 @@ Modulo.insert = (Modulo, next) => {
         return next('Connection refused');
     connection.query(`INSERT INTO modulo SET ?`, [Modulo], (error, result) => {
         if ( error )
-            return next({ success: false, error: error })
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo' })
         else
-            return next( null, { success: true, result: result });
+            return next( null, { success: true, result: result, message: 'Registro agregado correctamente' });
     });
 };
 
@@ -64,9 +64,20 @@ Modulo.update = (Modulo, next) => {
         return next('Connection refused');
     connection.query('UPDATE modulo SET ? WHERE idModulo = ?', [Modulo, Modulo.idModulo], (error, result) => {
         if ( error )
-            return next({ success: false, error: error });
+            return next({ success: false, error: error, message: 'Hubo un error al realizar esta acción, intente de nuevo'});
         else
-            return next( null, { success: true, result: result});
+            return next( null, { success: true, result: result, message: 'Datos actualizados'});
+    });
+};
+
+Modulo.logicRemove = (moduloId, next) => {
+    if( !connection )
+        return next('Connection refused');
+    connection.query('UPDATE modulo SET baja = 1 WHERE idModulo = ?', [moduloId], (error, result) => {
+        if ( error )
+            return next({ success: false, error: error, message: 'Hubo un error al eliminar este registro' });
+        else
+            return next( null, { success: true, result: result, message: 'Modulo eliminado' });
     });
 };
 

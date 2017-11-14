@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Modulo = require('../models/modulo');
+const passport = require('passport');
 
 router
     .get('/', (req, res, next) => {
@@ -23,6 +24,16 @@ router
             return Modulo.response(res, error, data);
         });
     })
+
+    .delete('/:id', (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        const moduloId = req.params.id;
+        Modulo.logicRemove( moduloId, (error, data) => {
+            return Modulo.response(res, error, data);
+        });
+    })(req, res, next);
+})
+
     .patch('/', (req, res, next) => {
         const modulo = {
             idModulo: req.body.idModulo,
@@ -36,6 +47,7 @@ router
         const modulo = {
             idModulo: null,
             nombre: req.body.nombre,
+            baja: false
         };
         console.log(modulo);
         Modulo.insert( modulo, (error, data) => {
