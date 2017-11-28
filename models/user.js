@@ -43,16 +43,33 @@ User.login = ( email, password, next ) => {
         return next('Connection refused');
 
     connection.query(`
-        SELECT idUser, Usuario, password FROM user WHERE Usuario = ?`, [Usuario], (error, result) => {
+        SELECT idUser, email, password FROM user WHERE email = ?`, [email], (error, result) => {
         if ( error )
             return next( error );
         if ( result[0] ) {
             const hash = result[0].password.toString();
+
+            console.log('hash', hash);
+            console.log('result[0].password.toString()', result[0].password.toString());
+            console.log('password', password);
+
+bcrypt.hash(password, saltRounds)
+    .then( hash => {
+            console.log('password hash', hash);
+    });
+
+
+
+
             bcrypt.compare(password, hash, ( error, res ) => {
+
+
+            console.log('res', res);
+
                 if ( res ) {
                     const User = {
-                        id_User: result[0].idUser,
-                        Usuario: result[0].Usuario,
+                        idUser: result[0].idUser,
+                        email: result[0].email,
                         password: hash
                     }
                     // Generate token

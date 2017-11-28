@@ -7,6 +7,7 @@ router
         const user = {
           idUser: null,
           usuario: req.body.usuario,
+          email: req.body.email,
           password: req.body.password,
           Rol_idRol: req.body.Rol_idRol,
           baja: false
@@ -16,11 +17,11 @@ router
         });
     })
     .post('/login', (req, res, next) => {
-        const usuario = req.body.usuario;
+        const email = req.body.email;
         const password = req.body.password;
-        console.log(usuario)
-        console.log(password)
-        User.login( usuario, password, ( error, data ) => {
+        console.log(email);
+        console.log(password);
+        User.login( email, password, ( error, data ) => {
             return User.response( res, error, data );
         });
     })
